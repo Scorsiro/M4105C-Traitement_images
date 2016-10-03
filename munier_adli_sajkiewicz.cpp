@@ -372,6 +372,7 @@ void MyPanel::OnPaint(wxPaintEvent &WXUNUSED(event)){
     if (this->m_image!=nullptr) {
             this->m_bitmap = wxBitmap(*this->m_image);
             dc.DrawBitmap(this->m_bitmap,0,0);
+            dc.DrawCircle(50,50,40);
     }
 };
 
