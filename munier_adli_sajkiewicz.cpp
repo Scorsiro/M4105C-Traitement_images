@@ -79,7 +79,7 @@ enum
 	ID_Posterize = 17,
 	ID_Rotation = 18,
 	ID_NombreCouleurs = 19,
-	ID_Contrast
+	ID_Contrast = 20
 };
 
 

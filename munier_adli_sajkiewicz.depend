@@ -1668,3 +1668,12 @@
 	<wx/wxprec.h>
 	<wx/wx.h>
 
+1475494360 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/munier_adli_sajkiewicz.cpp
+	<wx/wxprec.h>
+	<wx/wx.h>
+	"MyImage.hpp"
+	<time.h>
+	"MyThresholdDialog.hpp"
+	"MyRotateDialog.hpp"
+	"MyHistogram.hpp"
+
