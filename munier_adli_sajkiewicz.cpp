@@ -410,11 +410,24 @@ void MyPanel::NegativeImage(){
     Refresh();
 }
 
-void MyPanel::ThresholdImage(){
+/*void MyPanel::ThresholdImage(){
     MyThresholdDialog *dlg = new MyThresholdDialog(this, -1, wxT("Threshold"), wxDefaultPosition, wxSize(250,140)) ;
     dlg->ShowModal() ;
     this->m_image->Threshold(dlg->m_threshold->GetValue());
     Refresh();
+}*/
+
+//Version de ThresholdImage du TP7
+
+void MyPanel::ThresholdImage(){
+    //Sauvegarder l'image courante
+    unsigned char* buffer = this->getImagePtr()->GetData();
+    MyThresholdDialog *dlg = new MyThresholdDialog(this, -1, wxT("Threshold"), wxDefaultPosition, wxSize(250,140)) ;
+    int reponse = dlg->ShowModal();
+    if(reponse == wxID_CANCEL){
+        this->getImagePtr()->SetData(buffer); // rétablir l'image originale grace à la sauvegarde
+    }
+
 }
 
 void MyPanel::RotateImage(){
