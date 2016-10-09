@@ -19,6 +19,14 @@ public:
     void Posterize();
     int NombreCouleurs();
     void EnhenceContrast(int minValue, int maxValue);
+    void Draw(wxPoint point, int color);
 };
 
+/*enum
+{
+ID_Red = 22,
+ID_Green = 23,
+ID_Blue = 24
+};
+*/
 #endif

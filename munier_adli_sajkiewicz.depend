@@ -1644,12 +1644,13 @@
 1413563581 /usr/include/wx-3.0/wx/gtk/mdi.h
 	"wx/frame.h"
 
-1474961944 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.hpp
+1476047928 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.hpp
 	<wx/wxprec.h>
 	<wx/wx.h>
 
-1474961253 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.cpp
+1476049477 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.cpp
 	"MyImage.hpp"
+	<iostream>
 
 1474891398 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyRotateDialog.cpp
 	"MyRotateDialog.hpp"
@@ -1661,14 +1662,14 @@
 	<wx/button.h>
 	<wx/dialog.h>
 
-1474289135 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyThresholdDialog.cpp
+1475508848 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyThresholdDialog.cpp
 	"MyThresholdDialog.hpp"
 
-1474962403 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyThresholdDialog.hpp
+1475508848 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyThresholdDialog.hpp
 	<wx/wxprec.h>
 	<wx/wx.h>
 
-1475494360 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/munier_adli_sajkiewicz.cpp
+1476049195 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/munier_adli_sajkiewicz.cpp
 	<wx/wxprec.h>
 	<wx/wx.h>
 	"MyImage.hpp"
