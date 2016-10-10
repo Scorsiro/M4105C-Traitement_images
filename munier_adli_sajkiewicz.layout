@@ -2,56 +2,44 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-<<<<<<< HEAD
-	<File name="MyImage.hpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-=======
-	<File name="MyThresholdDialog.cpp" open="1" top="1" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
->>>>>>> 56e7694d533135b6225415b29a23350aad600fdc
+	<File name="MyHistogram.hpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="482" topLine="0" />
+			<Cursor1 position="0" topLine="0" />
 		</Cursor>
 	</File>
-<<<<<<< HEAD
-	<File name="MyHistogram.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="opencv_bridge.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="431" topLine="0" />
-=======
-	<File name="MyImage.hpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="438" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="MyThresholdDialog.hpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="494" topLine="0" />
->>>>>>> 56e7694d533135b6225415b29a23350aad600fdc
+			<Cursor1 position="1946" topLine="41" />
 		</Cursor>
 	</File>
 	<File name="munier_adli_sajkiewicz.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-<<<<<<< HEAD
-			<Cursor1 position="14520" topLine="485" />
+			<Cursor1 position="15470" topLine="518" />
+		</Cursor>
+	</File>
+	<File name="MyImage.hpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="131" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="MyImage.cpp" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-=======
-			<Cursor1 position="12906" topLine="433" />
+		<Cursor>
+			<Cursor1 position="5009" topLine="181" />
 		</Cursor>
 	</File>
-	<File name="MyHistogram.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
->>>>>>> 56e7694d533135b6225415b29a23350aad600fdc
+	<File name="opencv_bridge.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4644" topLine="0" />
+			<Cursor1 position="210" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="MyImage.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="MyHistogram.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4304" topLine="39" />
+			<Cursor1 position="431" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="MyHistogram.hpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="MyThresholdDialog.hpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="211" topLine="0" />
+			<Cursor1 position="57" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

@@ -15,7 +15,11 @@
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-g" />
+					<Add option="`pkg-config --cflags`" />
 				</Compiler>
+				<Linker>
+					<Add option="`pkg-config --libs opencv`" />
+				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/munier_adli_sajkiewicz" prefix_auto="1" extension_auto="1" />
@@ -47,6 +51,8 @@
 		<Unit filename="MyThresholdDialog.cpp" />
 		<Unit filename="MyThresholdDialog.hpp" />
 		<Unit filename="munier_adli_sajkiewicz.cpp" />
+		<Unit filename="opencv_bridge.cpp" />
+		<Unit filename="opencv_bridge.h" />
 		<Extensions>
 			<envvars />
 			<code_completion />
