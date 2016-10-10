@@ -1,6 +1,5 @@
 #include "MyImage.hpp"
 #include <iostream>
-#include <opencv_bridge.h>
 
 
 MyImage::MyImage(const wxString& fileName)
@@ -170,7 +169,6 @@ void MyImage::setOldPoint(wxPoint point){
 }
 
 void MyImage::Draw(wxPoint point, int color){
-    IplImage* iplImage = new IplImage();
     int r = 0; int v = 0; int b = 0;
     switch (color){
     case 22:
@@ -185,10 +183,11 @@ void MyImage::Draw(wxPoint point, int color){
     default:
         break;
     }
+    IplImage* iplImage = cvCreateImage(cvSize(GetWidth(), GetHeight()),8,3);
     unsigned char* buffer = GetData();
     BufferToIplImage(buffer, iplImage);
-    cvLine(iplImage, )
-    int bit;
+    cvLine(iplImage, cvPoint(getOldPoint().x, getOldPoint().y), cvPoint(point.x,point.y), CV_RGB(r,v,b),1,8);
+    /*int bit;
     for (int i=0; i<3; i++){
         if (i==0){
             bit = r;
@@ -208,7 +207,10 @@ void MyImage::Draw(wxPoint point, int color){
         buffer[3*point.y*GetWidth()+3*point.x+3 + i] = bit;
         buffer[3*point.y*GetWidth()+3*point.x-3 + i] = bit;
         buffer[3*point.y*GetWidth()+3*point.x + i] = bit;
-    }
+    }*/
+    unsigned char* outBuffer = (unsigned char *) malloc(GetWidth()*GetHeight()*3);
+    IplImageToBuffer(iplImage, outBuffer);
+    SetData(outBuffer);
     setOldPoint(point);
     /*unsigned char* buffer = GetData();
     for (int i=0; i<3; i++){

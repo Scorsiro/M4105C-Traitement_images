@@ -1644,14 +1644,14 @@
 1413563581 /usr/include/wx-3.0/wx/gtk/mdi.h
 	"wx/frame.h"
 
-1476099977 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.hpp
+1476102370 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.hpp
 	<wx/wxprec.h>
 	<wx/wx.h>
+	"opencv_bridge.h"
 
-1476100949 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.cpp
+1476103544 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.cpp
 	"MyImage.hpp"
 	<iostream>
-	<opencv_bridge.h>
 
 1474891398 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyRotateDialog.cpp
 	"MyRotateDialog.hpp"
@@ -1670,7 +1670,7 @@
 	<wx/wxprec.h>
 	<wx/wx.h>
 
-1476101096 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/munier_adli_sajkiewicz.cpp
+1476102296 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/munier_adli_sajkiewicz.cpp
 	<wx/wxprec.h>
 	<wx/wx.h>
 	"MyImage.hpp"
@@ -1719,4 +1719,10 @@
 
 1475566237 source:/users/info/etu-s4/adlit/ProjetTraitementImage/M4105C-Traitement_images/MyThresholdDialog.cpp
 	"MyThresholdDialog.hpp"
+
+1476099520 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/opencv_bridge.cpp
+	"opencv_bridge.h"
+
+1476099390 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/opencv_bridge.h
+	<opencv/cv.h>
 

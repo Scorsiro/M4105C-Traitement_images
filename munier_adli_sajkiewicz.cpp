@@ -547,6 +547,7 @@ void MyPanel::OnClick(wxMouseEvent &event){
 void MyPanel::startDraw(wxMouseEvent &event){
     //Connect(wxEVT_MOTION, wxMouseEventHandler(MyPanel::OnClick));
     if (getImagePtr()!=nullptr){
+        getImagePtr()->setOldPoint(event.GetPosition());
         Bind(wxEVT_MOTION, &MyPanel::OnClick, this);
     }
     else wxLogMessage(wxT("Aucune image chargée"));

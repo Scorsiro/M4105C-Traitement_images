@@ -5,6 +5,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include "opencv_bridge.h"
 
 class MyImage: public wxImage {
 public:
