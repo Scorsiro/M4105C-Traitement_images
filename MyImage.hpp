@@ -20,6 +20,10 @@ public:
     int NombreCouleurs();
     void EnhenceContrast(int minValue, int maxValue);
     void Draw(wxPoint point, int color);
+    wxPoint getOldPoint();
+    void setOldPoint(wxPoint point);
+private:
+    wxPoint oldPoint;
 };
 
 /*enum

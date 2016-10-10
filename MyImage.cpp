@@ -1,5 +1,6 @@
 #include "MyImage.hpp"
 #include <iostream>
+#include <opencv_bridge.h>
 
 
 MyImage::MyImage(const wxString& fileName)
@@ -160,7 +161,16 @@ void MyImage::EnhenceContrast(int minValue, int maxValue){
     }
 }
 
+wxPoint MyImage::getOldPoint(){
+    return oldPoint;
+}
+
+void MyImage::setOldPoint(wxPoint point){
+    oldPoint = point;
+}
+
 void MyImage::Draw(wxPoint point, int color){
+    IplImage* iplImage = new IplImage();
     int r = 0; int v = 0; int b = 0;
     switch (color){
     case 22:
@@ -176,6 +186,8 @@ void MyImage::Draw(wxPoint point, int color){
         break;
     }
     unsigned char* buffer = GetData();
+    BufferToIplImage(buffer, iplImage);
+    cvLine(iplImage, )
     int bit;
     for (int i=0; i<3; i++){
         if (i==0){
@@ -197,4 +209,9 @@ void MyImage::Draw(wxPoint point, int color){
         buffer[3*point.y*GetWidth()+3*point.x-3 + i] = bit;
         buffer[3*point.y*GetWidth()+3*point.x + i] = bit;
     }
+    setOldPoint(point);
+    /*unsigned char* buffer = GetData();
+    for (int i=0; i<3; i++){
+        buffer[3*point.y*GetWidth()+3*point.x + i] = 255;
+    }*/
 }
