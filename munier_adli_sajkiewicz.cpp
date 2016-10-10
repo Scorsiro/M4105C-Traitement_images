@@ -10,6 +10,7 @@
 #include "MyRotateDialog.hpp"
 #include "MyHistogram.hpp"
 
+wxDEFINE_EVENT(MON_EVENEMENT, wxCommandEvent);
 
 class MyApp: public wxApp
 {
@@ -30,6 +31,7 @@ public:
     void RotationImage(int id);
     void NegativeImage();
     void ThresholdImage();
+    void OnThresholdImage(wxCommandEvent & event) ;
     void RotateImage();
     MyImage* getImagePtr();
     void setColor(int color);
@@ -96,7 +98,8 @@ enum
 	ID_Draw = 21,
 	ID_Red = 22,
 	ID_Green = 23,
-	ID_Blue = 24
+	ID_Blue = 24,
+	ID_ThresholdScroll = 25
 };
 
 
@@ -209,6 +212,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	//Bind(wxEVT_LEFT_UP, &MyPanel::OnClick(wxMouseEvent event), this, ID_Draw);
 	//(MyPanel::OnClick)
 
+
+
 	wxMenuBar *menuBar = new wxMenuBar ;
 	menuBar->Append( menuFile, wxT("File" )) ;
 	menuBar->Append( menuHelp, wxT("Help" )) ;
@@ -277,7 +282,9 @@ void MyFrame::OnProcessImage(wxCommandEvent& event){
         break;
     case ID_Threshold:
         if (this->m_panel->getImagePtr()!=nullptr){
+            wxImage imageCopy = this->m_panel->getImagePtr()->Copy() ;
             this->m_panel->ThresholdImage();
+            *(this->m_panel->getImagePtr()) = imageCopy.Copy();
         }
         else wxLogMessage(wxT("Aucune image chargée"));
         break;
@@ -380,7 +387,8 @@ void MyFrame::OnEnCours(wxCommandEvent& event)
 
 MyPanel::MyPanel(wxWindow *parent) : wxPanel(parent){
     Bind(wxEVT_PAINT, &MyPanel::OnPaint, this) ;
-    //Connect(wxEVT_LEFT_UP, wxMouseEventHandler(MyPanel::OnClick));
+    Bind(MON_EVENEMENT, &MyPanel::OnThresholdImage, this) ;
+
     this->m_image = nullptr;
     this->color = ID_Red;
 };
@@ -466,20 +474,45 @@ void MyPanel::NegativeImage(){
     dlg->ShowModal() ;
     this->m_image->Threshold(dlg->m_threshold->GetValue());
     Refresh();
-}*/
+}
+*/
 
 //Version de ThresholdImage du TP7
 
 void MyPanel::ThresholdImage(){
     //Sauvegarder l'image courante
-    unsigned char* buffer = this->getImagePtr()->GetData();
+    wxImage imageCopy = this->getImagePtr()->Copy() ;
     MyThresholdDialog *dlg = new MyThresholdDialog(this, -1, wxT("Threshold"), wxDefaultPosition, wxSize(250,140)) ;
     int reponse = dlg->ShowModal();
+
     if(reponse == wxID_CANCEL){
-        this->getImagePtr()->SetData(buffer); // rétablir l'image originale grace à la sauvegarde
+        // rétablir l'image originale grace à la sauvegarde
+        *(this->getImagePtr()) = imageCopy.Copy();
+        Refresh();
     }
 
+
+
+
 }
+
+void MyPanel::OnThresholdImage(wxCommandEvent& event){
+    int val = event.GetInt();
+
+    if(this->getImagePtr() != nullptr){
+
+        this->getImagePtr()->Threshold(val);
+        Refresh();
+    } else {
+
+        wxLogMessage("image non chargée") ;
+
+    }
+
+
+}
+
+
 
 void MyPanel::RotateImage(){
     MyRotateDialog *dlg = new MyRotateDialog(this, -1, wxDefaultPosition, wxSize(250,140));

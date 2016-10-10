@@ -1644,13 +1644,14 @@
 1413563581 /usr/include/wx-3.0/wx/gtk/mdi.h
 	"wx/frame.h"
 
-1476047928 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.hpp
+1476099977 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.hpp
 	<wx/wxprec.h>
 	<wx/wx.h>
 
-1476097707 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.cpp
+1476100949 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.cpp
 	"MyImage.hpp"
 	<iostream>
+	<opencv_bridge.h>
 
 1474891398 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyRotateDialog.cpp
 	"MyRotateDialog.hpp"
@@ -1662,14 +1663,14 @@
 	<wx/button.h>
 	<wx/dialog.h>
 
-1475508848 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyThresholdDialog.cpp
+1476101095 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyThresholdDialog.cpp
 	"MyThresholdDialog.hpp"
 
-1475508848 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyThresholdDialog.hpp
+1476101095 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyThresholdDialog.hpp
 	<wx/wxprec.h>
 	<wx/wx.h>
 
-1476049195 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/munier_adli_sajkiewicz.cpp
+1476101096 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/munier_adli_sajkiewicz.cpp
 	<wx/wxprec.h>
 	<wx/wx.h>
 	"MyImage.hpp"
@@ -1678,7 +1679,7 @@
 	"MyRotateDialog.hpp"
 	"MyHistogram.hpp"
 
-1475498472 source:/users/info/etu-s4/adlit/ProjetTraitementImage/M4105C-Traitement_images/munier_adli_sajkiewicz.cpp
+1476099382 source:/users/info/etu-s4/adlit/ProjetTraitementImage/M4105C-Traitement_images/munier_adli_sajkiewicz.cpp
 	<wx/wxprec.h>
 	<wx/wx.h>
 	"MyImage.hpp"
@@ -1691,7 +1692,7 @@
 	<wx/wxprec.h>
 	<wx/wx.h>
 
-1475499193 /users/info/etu-s4/adlit/ProjetTraitementImage/M4105C-Traitement_images/MyThresholdDialog.hpp
+1475565988 /users/info/etu-s4/adlit/ProjetTraitementImage/M4105C-Traitement_images/MyThresholdDialog.hpp
 	<wx/wxprec.h>
 	<wx/wx.h>
 
@@ -1716,6 +1717,6 @@
 	<wx/intl.h>
 	<wx/string.h>
 
-1475496561 source:/users/info/etu-s4/adlit/ProjetTraitementImage/M4105C-Traitement_images/MyThresholdDialog.cpp
+1475566237 source:/users/info/etu-s4/adlit/ProjetTraitementImage/M4105C-Traitement_images/MyThresholdDialog.cpp
 	"MyThresholdDialog.hpp"
 
