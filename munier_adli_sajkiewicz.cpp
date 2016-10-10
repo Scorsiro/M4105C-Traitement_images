@@ -10,6 +10,7 @@
 #include "MyRotateDialog.hpp"
 #include "MyHistogram.hpp"
 
+wxDEFINE_EVENT(MON_EVENEMENT, wxCommandEvent);
 
 class MyApp: public wxApp
 {
@@ -30,14 +31,27 @@ public:
     void RotationImage(int id);
     void NegativeImage();
     void ThresholdImage();
+    void OnThresholdImage(wxCommandEvent & event) ;
     void RotateImage();
     MyImage* getImagePtr();
+    void setColor(int color);
+    int getColor();
+    void OnClick(wxMouseEvent &event);
+    void startDraw(wxMouseEvent &event);
+    void stopDraw(wxMouseEvent &event);
+    wxDECLARE_EVENT_TABLE();
 private:
     MyImage *m_image ;		// used to load and process the image
     wxBitmap m_bitmap ;	// used to display the image
     int m_width;
     int m_height;
+    int color;
 };
+
+wxBEGIN_EVENT_TABLE(MyPanel, wxPanel)
+EVT_LEFT_DOWN(MyPanel::startDraw)
+EVT_LEFT_UP(MyPanel::stopDraw)
+wxEND_EVENT_TABLE()
 
 
 class MyFrame: public wxFrame
@@ -54,6 +68,7 @@ private:
 	void OnExit(wxCommandEvent& event);
 	void OnEnCours(wxCommandEvent& event);
 	void OnLarge(wxCommandEvent& event);
+	void OnDraw(wxCommandEvent& event);
 };
 
 
@@ -79,7 +94,12 @@ enum
 	ID_Posterize = 17,
 	ID_Rotation = 18,
 	ID_NombreCouleurs = 19,
-	ID_Contrast = 20
+	ID_Contrast = 20,
+	ID_Draw = 21,
+	ID_Red = 22,
+	ID_Green = 23,
+	ID_Blue = 24,
+	ID_ThresholdScroll = 25
 };
 
 
@@ -108,6 +128,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	wxMenu *menuFile = new wxMenu ;
 	wxMenu *menuProcess = new wxMenu;
 	wxMenu *menuHelp = new wxMenu ;
+	wxMenu *menuDraw = new wxMenu;
 
 
 	menuFile->Append(ID_Hello, wxT("Hello...\tCtrl-H")) ;
@@ -171,15 +192,33 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	menuProcess->Append(ID_Contrast,wxT("Contrast"));
 	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Contrast);
 
+	menuProcess->Append(ID_Draw,wxT("Draw"));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Draw);
+
 
 	menuHelp->Append(ID_EnCours, wxT("En Cours"));
 	Bind(wxEVT_MENU, &MyFrame::OnEnCours, this, ID_EnCours);
+
+
+    menuDraw->Append(ID_Red, wxT("Red"));
+    Bind(wxEVT_MENU, &MyFrame::OnDraw, this, ID_Red);
+
+    menuDraw->Append(ID_Green, wxT("Green"));
+    Bind(wxEVT_MENU, &MyFrame::OnDraw, this, ID_Green);
+
+    menuDraw->Append(ID_Blue, wxT("Blue"));
+    Bind(wxEVT_MENU, &MyFrame::OnDraw, this, ID_Blue);
+
+	//Bind(wxEVT_LEFT_UP, &MyPanel::OnClick(wxMouseEvent event), this, ID_Draw);
+	//(MyPanel::OnClick)
+
 
 
 	wxMenuBar *menuBar = new wxMenuBar ;
 	menuBar->Append( menuFile, wxT("File" )) ;
 	menuBar->Append( menuHelp, wxT("Help" )) ;
 	menuBar->Append(menuProcess, wxT("Process"));
+	menuBar->Append(menuDraw, wxT("Draw"));
 	SetMenuBar(menuBar) ;
 	SetStatusBar(statusBar);
 }
@@ -243,7 +282,9 @@ void MyFrame::OnProcessImage(wxCommandEvent& event){
         break;
     case ID_Threshold:
         if (this->m_panel->getImagePtr()!=nullptr){
+            wxImage imageCopy = this->m_panel->getImagePtr()->Copy() ;
             this->m_panel->ThresholdImage();
+            *(this->m_panel->getImagePtr()) = imageCopy.Copy();
         }
         else wxLogMessage(wxT("Aucune image chargée"));
         break;
@@ -284,6 +325,11 @@ void MyFrame::OnProcessImage(wxCommandEvent& event){
 
     }
 
+}
+
+void MyFrame::OnDraw(wxCommandEvent& event){
+        m_panel->setColor(event.GetId());
+        //wxLogMessage(wxString::Format(wxT("%i"),m_panel->getColor()));
 }
 
 void MyFrame::OnHello(wxCommandEvent& event)
@@ -341,7 +387,10 @@ void MyFrame::OnEnCours(wxCommandEvent& event)
 
 MyPanel::MyPanel(wxWindow *parent) : wxPanel(parent){
     Bind(wxEVT_PAINT, &MyPanel::OnPaint, this) ;
+    Bind(MON_EVENEMENT, &MyPanel::OnThresholdImage, this) ;
+
     this->m_image = nullptr;
+    this->color = ID_Red;
 };
 
 MyPanel::~MyPanel(){
@@ -350,6 +399,14 @@ MyPanel::~MyPanel(){
 
 MyImage* MyPanel::getImagePtr(){
     return this->m_image;
+}
+
+void MyPanel::setColor(int color){
+    this->color = color;
+}
+
+int MyPanel::getColor(){
+    return color;
 }
 
 void MyPanel::OpenImage(wxString fileName){
@@ -372,6 +429,8 @@ void MyPanel::OnPaint(wxPaintEvent &WXUNUSED(event)){
     if (this->m_image!=nullptr) {
             this->m_bitmap = wxBitmap(*this->m_image);
             dc.DrawBitmap(this->m_bitmap,0,0);
+
+            //dc.DrawCircle(50,50,40);
     }
 };
 
@@ -410,12 +469,50 @@ void MyPanel::NegativeImage(){
     Refresh();
 }
 
-void MyPanel::ThresholdImage(){
+/*void MyPanel::ThresholdImage(){
     MyThresholdDialog *dlg = new MyThresholdDialog(this, -1, wxT("Threshold"), wxDefaultPosition, wxSize(250,140)) ;
     dlg->ShowModal() ;
     this->m_image->Threshold(dlg->m_threshold->GetValue());
     Refresh();
 }
+*/
+
+//Version de ThresholdImage du TP7
+
+void MyPanel::ThresholdImage(){
+    //Sauvegarder l'image courante
+    wxImage imageCopy = this->getImagePtr()->Copy() ;
+    MyThresholdDialog *dlg = new MyThresholdDialog(this, -1, wxT("Threshold"), wxDefaultPosition, wxSize(250,140)) ;
+    int reponse = dlg->ShowModal();
+
+    if(reponse == wxID_CANCEL){
+        // rétablir l'image originale grace à la sauvegarde
+        *(this->getImagePtr()) = imageCopy.Copy();
+        Refresh();
+    }
+
+
+
+
+}
+
+void MyPanel::OnThresholdImage(wxCommandEvent& event){
+    int val = event.GetInt();
+
+    if(this->getImagePtr() != nullptr){
+
+        this->getImagePtr()->Threshold(val);
+        Refresh();
+    } else {
+
+        wxLogMessage("image non chargée") ;
+
+    }
+
+
+}
+
+
 
 void MyPanel::RotateImage(){
     MyRotateDialog *dlg = new MyRotateDialog(this, -1, wxDefaultPosition, wxSize(250,140));
@@ -435,4 +532,26 @@ void MyPanel::RotateImage(){
         }
     }
     else dlg->Destroy();
+}
+
+void MyPanel::OnClick(wxMouseEvent &event){
+
+        //wxPaintDC dc(this);
+
+        this->getImagePtr()->Draw(/*event.GetLogicalPosition(dc)*/event.GetPosition(), getColor());
+        //this->getImagePtr()->Draw(mouseState.GetPosition());
+        Refresh();
+        //}
+}
+
+void MyPanel::startDraw(wxMouseEvent &event){
+    //Connect(wxEVT_MOTION, wxMouseEventHandler(MyPanel::OnClick));
+    if (getImagePtr()!=nullptr){
+        Bind(wxEVT_MOTION, &MyPanel::OnClick, this);
+    }
+    else wxLogMessage(wxT("Aucune image chargée"));
+}
+
+void MyPanel::stopDraw(wxMouseEvent &event){
+    Unbind(wxEVT_MOTION, &MyPanel::OnClick, this);
 }

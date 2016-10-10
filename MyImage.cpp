@@ -1,4 +1,6 @@
 #include "MyImage.hpp"
+#include <iostream>
+#include <opencv_bridge.h>
 
 
 MyImage::MyImage(const wxString& fileName)
@@ -157,4 +159,59 @@ void MyImage::EnhenceContrast(int minValue, int maxValue){
     for(int i=0; i<n; i++){
         buffer[i] = f*buffer[i]+d;
     }
+}
+
+wxPoint MyImage::getOldPoint(){
+    return oldPoint;
+}
+
+void MyImage::setOldPoint(wxPoint point){
+    oldPoint = point;
+}
+
+void MyImage::Draw(wxPoint point, int color){
+    IplImage* iplImage = new IplImage();
+    int r = 0; int v = 0; int b = 0;
+    switch (color){
+    case 22:
+        r = 255;
+        break;
+    case 23:
+        v = 255;
+        break;
+    case 24:
+        b = 255;
+        break;
+    default:
+        break;
+    }
+    unsigned char* buffer = GetData();
+    BufferToIplImage(buffer, iplImage);
+    cvLine(iplImage, )
+    int bit;
+    for (int i=0; i<3; i++){
+        if (i==0){
+            bit = r;
+        }
+        else if (i==1){
+            bit = v;
+        }
+        else {
+            bit = b;
+        }
+        buffer[3*(point.y-1)*GetWidth()+3*point.x-3 + i] = bit;
+        buffer[3*(point.y-1)*GetWidth()+3*point.x+3 + i] = bit;
+        buffer[3*(point.y+1)*GetWidth()+3*point.x-3 + i] = bit;
+        buffer[3*(point.y+1)*GetWidth()+3*point.x+3 + i] = bit;
+        buffer[3*(point.y+1)*GetWidth()+3*point.x + i] = bit;
+        buffer[3*(point.y-1)*GetWidth()+3*point.x + i] = bit;
+        buffer[3*point.y*GetWidth()+3*point.x+3 + i] = bit;
+        buffer[3*point.y*GetWidth()+3*point.x-3 + i] = bit;
+        buffer[3*point.y*GetWidth()+3*point.x + i] = bit;
+    }
+    setOldPoint(point);
+    /*unsigned char* buffer = GetData();
+    for (int i=0; i<3; i++){
+        buffer[3*point.y*GetWidth()+3*point.x + i] = 255;
+    }*/
 }
