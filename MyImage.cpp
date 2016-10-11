@@ -183,7 +183,7 @@ void MyImage::Draw(wxPoint point, int color){
     default:
         break;
     }
-    IplImage* iplImage = cvCreateImage(cvSize(GetWidth(), GetHeight()),8,3);
+    //IplImage* iplImage = cvCreateImage(cvSize(GetWidth(), GetHeight()),8,3);
     unsigned char* buffer = GetData();
     BufferToIplImage(buffer, iplImage);
     cvLine(iplImage, cvPoint(getOldPoint().x, getOldPoint().y), cvPoint(point.x,point.y), CV_RGB(r,v,b),1,8);

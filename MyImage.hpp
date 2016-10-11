@@ -23,7 +23,9 @@ public:
     void Draw(wxPoint point, int color);
     wxPoint getOldPoint();
     void setOldPoint(wxPoint point);
+    IplImage* iplImage = cvCreateImage(cvSize(GetWidth(), GetHeight()),8,3);
 private:
+
     wxPoint oldPoint;
 };
 
