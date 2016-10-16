@@ -9,8 +9,10 @@
 #include "MyThresholdDialog.hpp"
 #include "MyRotateDialog.hpp"
 #include "MyHistogram.hpp"
+#include "LuminositeDialog.h"
 
 wxDEFINE_EVENT(MON_EVENEMENT, wxCommandEvent);
+wxDEFINE_EVENT(MON_EVENEMENT1, wxCommandEvent);
 
 class MyApp: public wxApp
 {
@@ -31,7 +33,9 @@ public:
     void RotationImage(int id);
     void NegativeImage();
     void ThresholdImage();
+    void LuminositeImage() ;
     void OnThresholdImage(wxCommandEvent & event) ;
+    void OnLuminositeImage(wxCommandEvent & event) ;
     void RotateImage();
     MyImage* getImagePtr();
 private:
@@ -82,7 +86,7 @@ enum
 	ID_Rotation = 18,
 	ID_NombreCouleurs = 19,
 	ID_Contrast = 20,
-	ID_ThresholdScroll = 21
+	ID_Luminosite = 21,
 };
 
 
@@ -174,6 +178,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	menuProcess->Append(ID_Contrast,wxT("Contrast"));
 	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Contrast);
 
+    menuProcess->Append(ID_Luminosite,wxT("Luminosité"));
+	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Luminosite);
 
 	menuHelp->Append(ID_EnCours, wxT("En Cours"));
 	Bind(wxEVT_MENU, &MyFrame::OnEnCours, this, ID_EnCours);
@@ -287,6 +293,14 @@ void MyFrame::OnProcessImage(wxCommandEvent& event){
         }
         else wxLogMessage(wxT("Aucune image chargée"));
         break;
+    case ID_Luminosite:
+          if (this->m_panel->getImagePtr()!=nullptr){
+            wxImage imageCopy = this->m_panel->getImagePtr()->Copy() ;
+            this->m_panel->LuminositeImage();
+            *(this->m_panel->getImagePtr()) = imageCopy.Copy();
+           }
+         else wxLogMessage(wxT("Aucune image chargée"));
+        break;
     default:
         break;
 
@@ -350,6 +364,8 @@ void MyFrame::OnEnCours(wxCommandEvent& event)
 MyPanel::MyPanel(wxWindow *parent) : wxPanel(parent){
     Bind(wxEVT_PAINT, &MyPanel::OnPaint, this) ;
     Bind(MON_EVENEMENT, &MyPanel::OnThresholdImage, this) ;
+    Bind(MON_EVENEMENT1 , &MyPanel::OnLuminositeImage,this);
+
 
     this->m_image = nullptr;
 };
@@ -389,6 +405,7 @@ void MyPanel::MirrorImage(bool horizontal){
     this->m_image->Mirror(horizontal);
     Refresh();
 }
+
 
 void MyPanel::BlurImage(){
     *this->m_image = this->m_image->Blur(5);
@@ -447,6 +464,23 @@ void MyPanel::ThresholdImage(){
 
 }
 
+void MyPanel::LuminositeImage(){
+
+    wxLogMessage("en construction");
+    //Sauvegarder l'image courante
+    wxImage imageCopy = this->getImagePtr()->Copy() ;
+    LuminositeDialog *dlg = new LuminositeDialog(this, -1, wxT("Réglage luminosité"), wxDefaultPosition, wxSize(250,140),wxSL_HORIZONTAL) ;
+    int reponse = dlg->ShowModal();
+
+    if(reponse == wxID_CANCEL){
+        // rétablir l'image originale grace à la sauvegarde
+        *(this->getImagePtr()) = imageCopy.Copy();
+        Refresh();
+    }
+
+
+}
+
 void MyPanel::OnThresholdImage(wxCommandEvent& event){
     int val = event.GetInt();
 
@@ -460,6 +494,10 @@ void MyPanel::OnThresholdImage(wxCommandEvent& event){
 
     }
 
+
+}
+
+void MyPanel::OnLuminositeImage(wxCommandEvent& event){
 
 }
 
