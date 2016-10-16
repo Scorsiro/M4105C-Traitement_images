@@ -1644,12 +1644,13 @@
 1413563581 /usr/include/wx-3.0/wx/gtk/mdi.h
 	"wx/frame.h"
 
-1476553565 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.hpp
+1476645025 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.hpp
 	<wx/wxprec.h>
 	<wx/wx.h>
 	"opencv_bridge.h"
+	<vector>
 
-1476553603 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.cpp
+1476646592 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.cpp
 	"MyImage.hpp"
 	<iostream>
 
@@ -1670,7 +1671,7 @@
 	<wx/wxprec.h>
 	<wx/wx.h>
 
-1476572631 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/munier_adli_sajkiewicz.cpp
+1476650570 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/munier_adli_sajkiewicz.cpp
 	<wx/wxprec.h>
 	<wx/wx.h>
 	"MyImage.hpp"

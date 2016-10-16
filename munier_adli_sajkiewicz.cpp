@@ -46,7 +46,10 @@ public:
     void startDraw(wxMouseEvent &event);
     void stopDraw(wxMouseEvent &event);
     void Previous();
+    void Next();
+    void RedrawImage();
     void ChooseColor();
+    void updateImageCopy();
     //wxDECLARE_EVENT_TABLE();
 private:
     MyImage *m_image ;		// used to load and process the image
@@ -105,13 +108,14 @@ enum
 	ID_Rotation = 18,
 	ID_NombreCouleurs = 19,
 	ID_Contrast = 20,
-	ID_Draw = 21,
+	ID_Dither = 21,
 	ID_Color = 22,
 	ID_Thinner = 23,
 	ID_Thicker= 24,
 	ID_ThresholdScroll = 25,
 	ID_Previous = 26,
-	ID_ThicknessSroll = 27
+	ID_Next = 27,
+	ID_ThicknessSroll = 28
 };
 
 
@@ -204,8 +208,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	menuProcess->Append(ID_Contrast,wxT("Contrast"));
 	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Contrast);
 
-	menuProcess->Append(ID_Draw,wxT("Draw"));
-	Bind(wxEVT_MENU, &MyFrame::OnProcessImage, this, ID_Draw);
+	menuProcess->Append(ID_Dither,wxT("Dither...\tCtrl-D")); // raccourci ctrl -D pour dithering
+    Bind(wxEVT_MENU, &MyFrame::OnProcessImage,this,ID_Dither);
 
 
 	menuHelp->Append(ID_EnCours, wxT("En Cours"));
@@ -242,6 +246,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
     menuDraw->Append(ID_Previous, wxT("Previous"));
     Bind(wxEVT_MENU, &MyFrame::OnDraw, this, ID_Previous);
+    menuDraw->Append(ID_Next, wxT("Next"));
+    Bind(wxEVT_MENU, &MyFrame::OnDraw, this, ID_Next);
 
 	//Bind(wxEVT_LEFT_UP, &MyPanel::OnClick(wxMouseEvent event), this, ID_Draw);
 	//(MyPanel::OnClick)
@@ -354,19 +360,22 @@ void MyFrame::OnProcessImage(wxCommandEvent& event){
         }
         else wxLogMessage(wxT("Aucune image chargée"));
         break;
+    case ID_Dither :
+        if ( this->m_panel->getImagePtr() != nullptr) {
+             this->m_panel->getImagePtr()->Dither() ;
+             Refresh();
+        }
+        else wxLogMessage(wxT("Aucune image chargée"));
+        break;
     default:
         break;
-
     }
-
+    m_panel->updateImageCopy();
 }
 
 void MyFrame::OnDraw(wxCommandEvent& event){
-    //if (this->m_panel->getImagePtr()!=nullptr){
         switch (event.GetId()){
         case ID_Color:
-            //m_panel->InitDraw();
-            //m_panel->setColor(event.GetId());
             m_panel->ChooseColor();
             break;
         case ID_Thinner:
@@ -385,8 +394,16 @@ void MyFrame::OnDraw(wxCommandEvent& event){
             }
             else wxLogMessage(wxT("Aucune image chargée"));
             break;
+        case ID_Next:
+            if (this->m_panel->getImagePtr()!=nullptr){
+                m_panel->Next();
+                Refresh();
+            }
+            else wxLogMessage(wxT("Aucune image chargée"));
+            break;
+        default:
+            break;
         }
-    //}
 }
 
 void MyFrame::OnHello(wxCommandEvent& event)
@@ -495,7 +512,7 @@ void MyPanel::OpenImage(wxString fileName){
     //m_image_copy = nullptr;
 
     this->m_image = new MyImage(fileName);
-    m_image_copy = new MyImage(fileName);
+    this->m_image_copy = new MyImage(fileName);
     this->m_width = m_image->GetWidth();
     this->m_height = m_image->GetHeight();
     this->SetSize(this->m_width,this->m_height);
@@ -505,12 +522,9 @@ void MyPanel::OpenImage(wxString fileName){
 
 void MyPanel::OnPaint(wxPaintEvent &WXUNUSED(event)){
     wxPaintDC dc(this);
-    //this->m_bitmap = *(new wxBitmap(*this->m_image));
     if (this->m_image!=nullptr) {
             this->m_bitmap = wxBitmap(*this->m_image);
             dc.DrawBitmap(this->m_bitmap,0,0);
-
-            //dc.DrawCircle(50,50,40);
     }
 };
 
@@ -615,24 +629,30 @@ void MyPanel::RotateImage(){
 }
 
 void MyPanel::OnClick(wxMouseEvent &event){
-
-        //wxPaintDC dc(this);
-        MyImage* var = getImagePtr();
         this->getImagePtr()->Draw(event.GetPosition(), getColor(), thickness);
         Refresh();
-        //}
 }
 
 void MyPanel::InitDraw(){
     Bind(wxEVT_LEFT_DOWN, &MyPanel::startDraw, this);
     Bind(wxEVT_LEFT_UP, &MyPanel::stopDraw, this);
-    //*m_image_copy = this->getImagePtr()->Copy();
+    //updateImageCopy();
+    //m_image_copy = this->getImagePtr()->copyImage();
 
 }
 
 void MyPanel::startDraw(wxMouseEvent &event){
     if (getImagePtr()!=nullptr){
         getImagePtr()->setOldPoint(event.GetPosition());
+        unsigned int n = m_image_copy->m_draw_steps.size();
+        if (n>0){
+            //for(int i=m_image->drawStep; i<=n; i++){
+            while (m_image_copy->drawStep!=m_image_copy->m_draw_steps.size()){
+                m_image_copy->m_draw_steps.pop_back();
+                m_image_copy->m_line_color.pop_back();
+                m_image_copy->m_line_thickness.pop_back();
+            }
+        }
         Bind(wxEVT_MOTION, &MyPanel::OnClick, this);
     }
     else wxLogMessage(wxT("Aucune image chargée"));
@@ -640,33 +660,56 @@ void MyPanel::startDraw(wxMouseEvent &event){
 
 void MyPanel::stopDraw(wxMouseEvent &event){
     Unbind(wxEVT_MOTION, &MyPanel::OnClick, this);
+    m_image_copy->m_draw_steps.push_back(m_image->m_line);
+    m_image->m_line.clear();
+    m_image_copy->m_line_color.push_back(color);
+    m_image_copy->m_line_thickness.push_back(thickness);
+    m_image_copy->drawStep++;
 }
 
 void MyPanel::Previous(){
-    *this->getImagePtr() = *m_image_copy;
+    if (m_image_copy->drawStep>0){
+        m_image_copy->drawStep--;
+        RedrawImage();
+    }
+}
+
+void MyPanel::Next(){
+    if (m_image_copy->drawStep < m_image_copy->m_draw_steps.size()){
+        m_image_copy->drawStep++;
+        RedrawImage();
+    }
+}
+
+void MyPanel::RedrawImage(){
+    //*this->getImagePtr() = *m_image_copy;
+    this->m_image = m_image_copy->copyImage();
+    for (unsigned int i=0; i<m_image->drawStep; i++){
+        std::vector<wxPoint> line = m_image->m_draw_steps.at(i);
+        wxColour line_color = m_image->m_line_color.at(i);
+        int line_thickness = m_image->m_line_thickness.at(i);
+        for (unsigned int j=1; j<line.size()-1; j++){
+            m_image->Redraw(line.at(j-1), line.at(j), line_color, line_thickness);
+        }
+    }
 }
 
 void MyPanel::ChooseColor(){
-    //MyColorDialog *dlg = new MyColorDialog(this, -1, wxDefaultPosition, wxSize(250,140));
-    //wxColourDialog *dlg = new wxColourDialog(this);
-    //wxColourData data;
-    //data.SetChooseFull(true);
-    /*for (int i = 0; i < 16; i++)
-    {
-        wxColour colour(i*16, i*16, i*16);
-        data.SetCustomColour(i, colour);
-    }*/
-    wxColourDialog dialog(this/*, &data*/);
+    wxColourDialog dialog(this);
     if (dialog.ShowModal() == wxID_OK)
     {
         wxColourData retData = dialog.GetColourData();
         wxColour col = retData.GetColour();
         setColor(col);
         InitDraw();
-        //wxBrush brush(col, wxSOLID);
-        //myWindow->SetBackground(brush);
-        //myWindow->Clear();
-        //myWindow->Refresh();
     }
+}
 
+void MyPanel::updateImageCopy(){
+    m_image_copy = this->getImagePtr()->copyImage();
+    if (!m_image_copy->m_line_color.empty()) m_image_copy->m_line_color.clear();
+    if (!m_image_copy->m_line_thickness.empty()) m_image_copy->m_line_thickness.clear();
+    if (!m_image_copy->m_draw_steps.empty()) m_image_copy->m_draw_steps.clear();
+    if (!m_image_copy->m_line.empty()) m_image_copy->m_line.clear();
+    m_image_copy->drawStep = 0;
 }
