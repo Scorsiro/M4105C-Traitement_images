@@ -1644,12 +1644,12 @@
 1413563581 /usr/include/wx-3.0/wx/gtk/mdi.h
 	"wx/frame.h"
 
-1476166029 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.hpp
+1476553565 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.hpp
 	<wx/wxprec.h>
 	<wx/wx.h>
 	"opencv_bridge.h"
 
-1476166118 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.cpp
+1476553603 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyImage.cpp
 	"MyImage.hpp"
 	<iostream>
 
@@ -1663,21 +1663,23 @@
 	<wx/button.h>
 	<wx/dialog.h>
 
-1476101095 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyThresholdDialog.cpp
+1476167379 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyThresholdDialog.cpp
 	"MyThresholdDialog.hpp"
 
-1476101095 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyThresholdDialog.hpp
+1476167379 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyThresholdDialog.hpp
 	<wx/wxprec.h>
 	<wx/wx.h>
 
-1476102296 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/munier_adli_sajkiewicz.cpp
+1476572631 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/munier_adli_sajkiewicz.cpp
 	<wx/wxprec.h>
 	<wx/wx.h>
 	"MyImage.hpp"
 	<time.h>
 	"MyThresholdDialog.hpp"
+	"MyThicknessDialog.hpp"
 	"MyRotateDialog.hpp"
 	"MyHistogram.hpp"
+	"wx/colordlg.h"
 
 1476099382 source:/users/info/etu-s4/adlit/ProjetTraitementImage/M4105C-Traitement_images/munier_adli_sajkiewicz.cpp
 	<wx/wxprec.h>
@@ -1725,4 +1727,56 @@
 
 1476099390 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/opencv_bridge.h
 	<opencv/cv.h>
+
+1476491770 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyColorDialog.cpp
+	"MyColorDialog.hpp"
+	<wx/intl.h>
+	<wx/string.h>
+
+1476491671 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyColorDialog.hpp
+	<wx/radiobox.h>
+	<wx/button.h>
+	<wx/dialog.h>
+	<wx/clrpicker.h>
+	<wx/colordlg.h>
+
+1413563578 /usr/include/wx-3.0/wx/clrpicker.h
+	"wx/defs.h"
+	"wx/pickerbase.h"
+	"wx/gtk/clrpicker.h"
+	"wx/generic/clrpickerg.h"
+
+1413563580 /usr/include/wx-3.0/wx/pickerbase.h
+	"wx/control.h"
+	"wx/sizer.h"
+	"wx/containr.h"
+
+1413563581 /usr/include/wx-3.0/wx/gtk/clrpicker.h
+	"wx/button.h"
+
+1413563578 /usr/include/wx-3.0/wx/colordlg.h
+	"wx/defs.h"
+	"wx/colourdata.h"
+	"wx/msw/colordlg.h"
+	"wx/osx/colordlg.h"
+	"wx/gtk/colordlg.h"
+	"wx/generic/colrdlgg.h"
+
+1413563578 /usr/include/wx-3.0/wx/colourdata.h
+	"wx/colour.h"
+
+1413563581 /usr/include/wx-3.0/wx/gtk/colordlg.h
+	"wx/dialog.h"
+
+1413563576 /usr/include/wx-3.0/wx/generic/colrdlgg.h
+	"wx/gdicmn.h"
+	"wx/dialog.h"
+
+1476570261 /users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyThicknessDialog.hpp
+	<wx/wxprec.h>
+	<wx/wx.h>
+	"opencv_bridge.h"
+
+1476572142 source:/users/info/etu-s4/munierto/M4105C/munier_adli_sajkiewicz/MyThicknessDialog.cpp
+	"MyThicknessDialog.hpp"
 

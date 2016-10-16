@@ -5,16 +5,25 @@
 MyImage::MyImage(const wxString& fileName)
 : wxImage(fileName)
 {
+    iplImage = cvCreateImage(cvSize(GetWidth(), GetHeight()),8,3);
 }
 
 MyImage::MyImage(wxImage image)
 : wxImage(image)
 {
+    iplImage = cvCreateImage(cvSize(GetWidth(), GetHeight()),8,3);
 }
 
 MyImage::MyImage()
 : wxImage()
 {
+    iplImage = cvCreateImage(cvSize(GetWidth(), GetHeight()),8,3);
+}
+
+MyImage::~MyImage(){
+    //wxLogMessage(wxT("Destruction image"));
+    cvReleaseImage(&this->iplImage);
+    //delete(iplImage);
 }
 
 void MyImage::Negative(){
@@ -98,14 +107,17 @@ void MyImage::Mirror(bool horizontally){
 
 wxImage MyImage::Rotate90(){
     unsigned char* bufferInImage = GetData();
-    MyImage outImage ;
-    outImage.Create(GetHeight(), GetWidth() , false);
-    unsigned char* bufferOutImage = (unsigned char*) malloc(GetHeight()*GetWidth()*3);
+    MyImage outImage;
+    int height = GetHeight();
+    int width = GetWidth();
 
-    for(int i=0; i<GetWidth(); i++){
-        for(int j=0; j<GetHeight(); j++){
+    outImage.Create(height, width, false);
+    unsigned char* bufferOutImage = (unsigned char*) malloc(height*width*3);
+
+    for(int i=0; i<width; i++){
+        for(int j=0; j<height; j++){
             for (int k=0; k<3; k++){
-                bufferOutImage[3*(i*GetHeight())+3*(GetHeight()-j)+k] = bufferInImage[3*j*GetWidth()+3*i+k];
+                bufferOutImage[3*(i*height)+3*(height-j)+k] = bufferInImage[3*j*width+3*i+k];
             }
         }
     }
@@ -168,25 +180,13 @@ void MyImage::setOldPoint(wxPoint point){
     oldPoint = point;
 }
 
-void MyImage::Draw(wxPoint point, int color){
-    int r = 0; int v = 0; int b = 0;
-    switch (color){
-    case 22:
-        r = 255;
-        break;
-    case 23:
-        v = 255;
-        break;
-    case 24:
-        b = 255;
-        break;
-    default:
-        break;
-    }
+void MyImage::Draw(wxPoint point, wxColour color, int thickness){
     //IplImage* iplImage = cvCreateImage(cvSize(GetWidth(), GetHeight()),8,3);
     unsigned char* buffer = GetData();
     BufferToIplImage(buffer, iplImage);
-    cvLine(iplImage, cvPoint(getOldPoint().x, getOldPoint().y), cvPoint(point.x,point.y), CV_RGB(r,v,b),1,8);
+    // iplImiage plus à la bonne taille après rotation
+    cvLine(iplImage, cvPoint(getOldPoint().x, getOldPoint().y), cvPoint(point.x,point.y), CV_RGB(color.Red(),color.Green(),color.Blue()),thickness,8);
+
     /*int bit;
     for (int i=0; i<3; i++){
         if (i==0){
@@ -208,12 +208,11 @@ void MyImage::Draw(wxPoint point, int color){
         buffer[3*point.y*GetWidth()+3*point.x-3 + i] = bit;
         buffer[3*point.y*GetWidth()+3*point.x + i] = bit;
     }*/
+
     unsigned char* outBuffer = (unsigned char *) malloc(GetWidth()*GetHeight()*3);
     IplImageToBuffer(iplImage, outBuffer);
     SetData(outBuffer);
+
     setOldPoint(point);
-    /*unsigned char* buffer = GetData();
-    for (int i=0; i<3; i++){
-        buffer[3*point.y*GetWidth()+3*point.x + i] = 255;
-    }*/
+
 }

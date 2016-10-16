@@ -12,6 +12,7 @@ public:
     MyImage(const wxString& fileName) ;
     MyImage(wxImage image) ;
     MyImage() ;
+    ~MyImage() ;
     void Negative();
     void Desaturate();
     void Threshold(int seuil);
@@ -20,12 +21,11 @@ public:
     void Posterize();
     int NombreCouleurs();
     void EnhenceContrast(int minValue, int maxValue);
-    void Draw(wxPoint point, int color);
+    void Draw(wxPoint point, wxColour color, int thickness);
     wxPoint getOldPoint();
     void setOldPoint(wxPoint point);
-    IplImage* iplImage = cvCreateImage(cvSize(GetWidth(), GetHeight()),8,3);
 private:
-
+    IplImage* iplImage;
     wxPoint oldPoint;
 };
 

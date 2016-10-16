@@ -7,8 +7,10 @@
 #include "MyImage.hpp"
 #include <time.h>
 #include "MyThresholdDialog.hpp"
+#include "MyThicknessDialog.hpp"
 #include "MyRotateDialog.hpp"
 #include "MyHistogram.hpp"
+#include "wx/colordlg.h"
 
 wxDEFINE_EVENT(MON_EVENEMENT, wxCommandEvent);
 
@@ -34,24 +36,32 @@ public:
     void OnThresholdImage(wxCommandEvent & event) ;
     void RotateImage();
     MyImage* getImagePtr();
-    void setColor(int color);
-    int getColor();
+    void setColor(wxColour color);
+    wxColour getColor();
+    int getThickness();
+    void setThickness(int thickness);
+    void ThicknessDraw();
     void OnClick(wxMouseEvent &event);
+    void InitDraw();
     void startDraw(wxMouseEvent &event);
     void stopDraw(wxMouseEvent &event);
-    wxDECLARE_EVENT_TABLE();
+    void Previous();
+    void ChooseColor();
+    //wxDECLARE_EVENT_TABLE();
 private:
     MyImage *m_image ;		// used to load and process the image
+    MyImage *m_image_copy;
     wxBitmap m_bitmap ;	// used to display the image
     int m_width;
     int m_height;
-    int color;
+    wxColour color;
+    int thickness;
 };
 
-wxBEGIN_EVENT_TABLE(MyPanel, wxPanel)
+/*wxBEGIN_EVENT_TABLE(MyPanel, wxPanel)
 EVT_LEFT_DOWN(MyPanel::startDraw)
 EVT_LEFT_UP(MyPanel::stopDraw)
-wxEND_EVENT_TABLE()
+wxEND_EVENT_TABLE()*/
 
 
 class MyFrame: public wxFrame
@@ -96,10 +106,12 @@ enum
 	ID_NombreCouleurs = 19,
 	ID_Contrast = 20,
 	ID_Draw = 21,
-	ID_Red = 22,
-	ID_Green = 23,
-	ID_Blue = 24,
-	ID_ThresholdScroll = 25
+	ID_Color = 22,
+	ID_Thinner = 23,
+	ID_Thicker= 24,
+	ID_ThresholdScroll = 25,
+	ID_Previous = 26,
+	ID_ThicknessSroll = 27
 };
 
 
@@ -200,14 +212,36 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	Bind(wxEVT_MENU, &MyFrame::OnEnCours, this, ID_EnCours);
 
 
-    menuDraw->Append(ID_Red, wxT("Red"));
+	/*wxMenu* menuColor = new wxMenu;
+
+    menuColor->AppendRadioItem(ID_Red, wxT("Red"));
     Bind(wxEVT_MENU, &MyFrame::OnDraw, this, ID_Red);
 
-    menuDraw->Append(ID_Green, wxT("Green"));
+    menuColor->AppendRadioItem(ID_Green, wxT("Green"));
     Bind(wxEVT_MENU, &MyFrame::OnDraw, this, ID_Green);
 
-    menuDraw->Append(ID_Blue, wxT("Blue"));
+    menuColor->AppendRadioItem(ID_Blue, wxT("Blue"));
     Bind(wxEVT_MENU, &MyFrame::OnDraw, this, ID_Blue);
+
+    menuDraw->AppendSubMenu(menuColor, wxT("Color"));*/
+
+    menuDraw->Append(ID_Color,wxT("Choose Color"));
+    Bind(wxEVT_MENU, &MyFrame::OnDraw, this, ID_Color);
+
+
+    wxMenu* menuThickness = new wxMenu;
+
+    menuThickness->Append(ID_Thinner, "Thinner");
+    Bind(wxEVT_MENU, &MyFrame::OnDraw, this, ID_Thinner);
+    menuThickness->Append(ID_Thicker, "Thicker");
+    Bind(wxEVT_MENU, &MyFrame::OnDraw, this, ID_Thicker);
+    menuThickness->Append(ID_ThicknessSroll, "Set Thickness");
+    Bind(wxEVT_MENU, &MyFrame::OnDraw, this, ID_ThicknessSroll);
+
+    menuDraw->AppendSubMenu(menuThickness, wxT("Thickness"));
+
+    menuDraw->Append(ID_Previous, wxT("Previous"));
+    Bind(wxEVT_MENU, &MyFrame::OnDraw, this, ID_Previous);
 
 	//Bind(wxEVT_LEFT_UP, &MyPanel::OnClick(wxMouseEvent event), this, ID_Draw);
 	//(MyPanel::OnClick)
@@ -328,8 +362,31 @@ void MyFrame::OnProcessImage(wxCommandEvent& event){
 }
 
 void MyFrame::OnDraw(wxCommandEvent& event){
-        m_panel->setColor(event.GetId());
-        //wxLogMessage(wxString::Format(wxT("%i"),m_panel->getColor()));
+    //if (this->m_panel->getImagePtr()!=nullptr){
+        switch (event.GetId()){
+        case ID_Color:
+            //m_panel->InitDraw();
+            //m_panel->setColor(event.GetId());
+            m_panel->ChooseColor();
+            break;
+        case ID_Thinner:
+            m_panel->setThickness(m_panel->getThickness()-1);
+            break;
+        case ID_Thicker:
+            m_panel->setThickness(m_panel->getThickness()+1);
+            break;
+        case ID_ThicknessSroll:
+            m_panel->ThicknessDraw();
+            break;
+        case ID_Previous:
+            if (this->m_panel->getImagePtr()!=nullptr){
+                m_panel->Previous();
+                Refresh();
+            }
+            else wxLogMessage(wxT("Aucune image chargée"));
+            break;
+        }
+    //}
 }
 
 void MyFrame::OnHello(wxCommandEvent& event)
@@ -390,32 +447,55 @@ MyPanel::MyPanel(wxWindow *parent) : wxPanel(parent){
     Bind(MON_EVENEMENT, &MyPanel::OnThresholdImage, this) ;
 
     this->m_image = nullptr;
-    this->color = ID_Red;
+    this->m_image_copy = nullptr;
+    this->color = *wxBLACK;
+    this->thickness = 1;
 };
 
 MyPanel::~MyPanel(){
     delete(this->m_image);
+    delete(this->m_image_copy);
 };
 
 MyImage* MyPanel::getImagePtr(){
     return this->m_image;
 }
 
-void MyPanel::setColor(int color){
+void MyPanel::setColor(wxColour color){
     this->color = color;
 }
 
-int MyPanel::getColor(){
+wxColour MyPanel::getColor(){
     return color;
 }
 
-void MyPanel::OpenImage(wxString fileName){
-    if (this->m_image!=nullptr){
+int MyPanel::getThickness(){
+    return thickness;
+}
 
+void MyPanel::setThickness(int thickness){
+    this->thickness = thickness;
+}
+
+void MyPanel::ThicknessDraw(){
+    MyThicknessDialog *dlg = new MyThicknessDialog(this, color, -1, wxT("Thickness"), wxDefaultPosition, wxSize(250,180));
+    if (dlg->ShowModal() == wxID_OK) {
+        setThickness(dlg->m_thickness->GetValue());
     }
+}
+
+void MyPanel::OpenImage(wxString fileName){
+    //if (this->getImagePtr()!=nullptr){
+        //this->m_image->Destroy();
+
+    //}
     delete(this->m_image);
-    //this->m_image = new MyImage(fileName, wxBITMAP_TYPE_ANY, -1);
+    //this->m_image = nullptr;
+    delete(this->m_image_copy);
+    //m_image_copy = nullptr;
+
     this->m_image = new MyImage(fileName);
+    m_image_copy = new MyImage(fileName);
     this->m_width = m_image->GetWidth();
     this->m_height = m_image->GetHeight();
     this->SetSize(this->m_width,this->m_height);
@@ -446,8 +526,8 @@ void MyPanel::BlurImage(){
 
 void MyPanel::RotationImage(int id){
     if (id==ID_RotationPlus90){
-        //*this->m_image = this->m_image->Rotate90(true);
-        *this->m_image = this->m_image->Rotate90();
+        *this->m_image = this->m_image->wxImage::Rotate90(true);
+        //this->m_image = this->m_image->Rotate90();
         this->m_width = m_image->GetWidth();
         this->m_height = m_image->GetHeight();
         this->SetSize(this->m_width,this->m_height);
@@ -537,15 +617,20 @@ void MyPanel::RotateImage(){
 void MyPanel::OnClick(wxMouseEvent &event){
 
         //wxPaintDC dc(this);
-
-        this->getImagePtr()->Draw(/*event.GetLogicalPosition(dc)*/event.GetPosition(), getColor());
-        //this->getImagePtr()->Draw(mouseState.GetPosition());
+        MyImage* var = getImagePtr();
+        this->getImagePtr()->Draw(event.GetPosition(), getColor(), thickness);
         Refresh();
         //}
 }
 
+void MyPanel::InitDraw(){
+    Bind(wxEVT_LEFT_DOWN, &MyPanel::startDraw, this);
+    Bind(wxEVT_LEFT_UP, &MyPanel::stopDraw, this);
+    //*m_image_copy = this->getImagePtr()->Copy();
+
+}
+
 void MyPanel::startDraw(wxMouseEvent &event){
-    //Connect(wxEVT_MOTION, wxMouseEventHandler(MyPanel::OnClick));
     if (getImagePtr()!=nullptr){
         getImagePtr()->setOldPoint(event.GetPosition());
         Bind(wxEVT_MOTION, &MyPanel::OnClick, this);
@@ -555,4 +640,33 @@ void MyPanel::startDraw(wxMouseEvent &event){
 
 void MyPanel::stopDraw(wxMouseEvent &event){
     Unbind(wxEVT_MOTION, &MyPanel::OnClick, this);
+}
+
+void MyPanel::Previous(){
+    *this->getImagePtr() = *m_image_copy;
+}
+
+void MyPanel::ChooseColor(){
+    //MyColorDialog *dlg = new MyColorDialog(this, -1, wxDefaultPosition, wxSize(250,140));
+    //wxColourDialog *dlg = new wxColourDialog(this);
+    //wxColourData data;
+    //data.SetChooseFull(true);
+    /*for (int i = 0; i < 16; i++)
+    {
+        wxColour colour(i*16, i*16, i*16);
+        data.SetCustomColour(i, colour);
+    }*/
+    wxColourDialog dialog(this/*, &data*/);
+    if (dialog.ShowModal() == wxID_OK)
+    {
+        wxColourData retData = dialog.GetColourData();
+        wxColour col = retData.GetColour();
+        setColor(col);
+        InitDraw();
+        //wxBrush brush(col, wxSOLID);
+        //myWindow->SetBackground(brush);
+        //myWindow->Clear();
+        //myWindow->Refresh();
+    }
+
 }

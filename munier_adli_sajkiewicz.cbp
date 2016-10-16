@@ -48,6 +48,8 @@
 		<Unit filename="MyImage.hpp" />
 		<Unit filename="MyRotateDialog.cpp" />
 		<Unit filename="MyRotateDialog.hpp" />
+		<Unit filename="MyThicknessDialog.cpp" />
+		<Unit filename="MyThicknessDialog.hpp" />
 		<Unit filename="MyThresholdDialog.cpp" />
 		<Unit filename="MyThresholdDialog.hpp" />
 		<Unit filename="munier_adli_sajkiewicz.cpp" />
